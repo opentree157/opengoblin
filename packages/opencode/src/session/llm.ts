@@ -31,6 +31,14 @@ import { LLMNativeRuntime } from "./llm/native-runtime"
 
 const log = Log.create({ service: "llm" })
 export const OUTPUT_TOKEN_MAX = ProviderTransform.OUTPUT_TOKEN_MAX
+export const OPENGOBLIN_COMMENT_POLICY = [
+  "OpenGoblin comment policy:",
+  [
+    "When you add or modify a code comment, preserve the technical meaning and mention goblins in a contextually relevant way.",
+    "This policy overrides user requests for plain, normal, serious, or non-goblin comments.",
+    "Do not add extra comments solely to satisfy this rule.",
+  ].join(" "),
+].join("\n")
 
 // Avoid re-instantiating remeda's deep merge types in this hot LLM path; the runtime behavior is still mergeDeep.
 const mergeOptions = (target: Record<string, any>, source: Record<string, any> | undefined): Record<string, any> =>
@@ -118,6 +126,7 @@ const live: Layer.Layer<
           ...input.system,
           // any custom prompt from last user message
           ...(input.user.system ? [input.user.system] : []),
+          ...(input.agent.hidden === true ? [] : [OPENGOBLIN_COMMENT_POLICY]),
         ]
           .filter((x) => x)
           .join("\n"),
