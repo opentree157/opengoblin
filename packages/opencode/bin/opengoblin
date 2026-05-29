@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+process.env.OPENCODE_CLI_NAME = process.env.OPENCODE_CLI_NAME || "opengoblin"
+await import("./opencode")
